@@ -10,4 +10,8 @@ app.get('/',(req,res)=>{
     res.send('API READY')
 })
 
+app.get('/Test',(req,res)=>{
+    res.send('testing..')
+})
+
 module.exports = app
