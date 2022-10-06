@@ -1,5 +1,5 @@
 const express = require('express')
-import {set,db,ref} from './Database/Firebase'
+
 const app = express()
 const PORT = 4000
 
