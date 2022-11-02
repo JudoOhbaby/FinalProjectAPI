@@ -104,5 +104,10 @@ app.post('/TestReq',(req,res)=>{
     res.send(JSON.stringify(req.body))
 })
 
+app.post('/SensorUpdate',(req,res)=>{
+    
+    res.send(JSON.stringify(req.body))
+})
+
 
 module.exports = app
