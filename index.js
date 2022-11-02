@@ -101,7 +101,7 @@ app.get('/TestFCM',(req,res)=>{
 
 app.post('/TestReq',(req,res)=>{
     
-    res.send(req.body)
+    res.send(JSON.stringify(req.body))
 })
 
 
