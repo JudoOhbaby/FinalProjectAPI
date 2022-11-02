@@ -106,7 +106,7 @@ app.post('/TestReq',(req,res)=>{
 
 app.post('/SensorUpdate',(req,res)=>{
     
-    res.send(JSON.stringify(req.body))
+    res.send(JSON.stringify(req.body.DeviceID))
 })
 
 
