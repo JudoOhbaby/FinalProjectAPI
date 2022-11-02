@@ -105,8 +105,6 @@ app.post('/TestReq',(req,res)=>{
 })
 
 app.post('/SensorUpdate',(req,res)=>{
-    
-    res.send(JSON.stringify(req.body.DeviceID))
     db.ref().child('Device/'+req.body.DeviceID+'/DeviceSensors').update({ Temperature: req.body.Temperature,Humidity:req.body.Humidity }, (error) => {
         if (error) {
             console.log('error')
@@ -115,6 +113,8 @@ app.post('/SensorUpdate',(req,res)=>{
             res.send('success')
         }
     })
+    res.send(JSON.stringify(req.body.DeviceID))
+    
 })
 
 
