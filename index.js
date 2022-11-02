@@ -105,14 +105,38 @@ app.post('/TestReq',(req,res)=>{
 })
 
 app.post('/SensorUpdate',(req,res)=>{
-    db.ref().child('Device/'+req.body.DeviceID+'/DeviceSensors').update({ Temperature: req.body.Temperature,Humidity:req.body.Humidity }, (error) => {
-        if (error) {
-            console.log('error')
-        } else {
-            console.log('sucess')
-          
-        }
-    })
+    if(req.body.Sensor == "Temperature"){
+        db.ref().child('Device/'+req.body.DeviceID+'/DeviceSensors').update({ Temperature: req.body.Temperature,Humidity:req.body.Humidity }, (error) => {
+            if (error) {
+                console.log('error')
+            } else {
+                console.log('sucess')
+              
+            }
+        })
+    }
+    if(req.body.Sensor == "Gps"){
+        db.ref().child('Device/'+req.body.DeviceID+'/DeviceSensors/Gps').update({ latitude: req.body.latitude,longitude:req.body.longitude }, (error) => {
+            if (error) {
+                console.log('error')
+            } else {
+                console.log('sucess')
+              
+            }
+        })
+    }
+    if(req.body.Sensor == "Gyro"){
+        db.ref().child('Device/'+req.body.DeviceID+'/DeviceSensors/Gyro').update({ x: req.body.x,y:req.body.y,z:req.body.z }, (error) => {
+            if (error) {
+                console.log('error')
+            } else {
+                console.log('sucess')
+              
+            }
+        })
+    }
+
+    
     res.send(JSON.stringify(req.body.DeviceID))
     
 })
