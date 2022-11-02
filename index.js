@@ -93,7 +93,7 @@ app.get('/TestFCM',(req,res)=>{
     });
 })
 
-app.post('/TestReq',(req,res)=>{
+app.get('/TestReq',(req,res)=>{
     res.send(req.body()+"adsf")
 })
 
