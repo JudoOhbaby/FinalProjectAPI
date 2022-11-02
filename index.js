@@ -5,6 +5,12 @@ const FCM = require('fcm-node')
 const db = database.database
 const app = express()
 const PORT = 4000
+let bodyParser = require('body-parser');
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
+
 
 app.listen(PORT, () => {
     console.log('API Listening on PORT ${PORT}')
@@ -94,6 +100,7 @@ app.get('/TestFCM',(req,res)=>{
 })
 
 app.post('/TestReq',(req,res)=>{
+    
     res.send(req.body)
 })
 
