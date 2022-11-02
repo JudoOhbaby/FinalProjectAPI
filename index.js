@@ -25,7 +25,7 @@ app.get('/Test', (req, res) => {
 })
 
 app.get('/TestFirebase', (req, res) => {
-    db.ref().child('/test').update({ name: 2 }, (error) => {
+    db.ref().child('/test').update({ name: 3 }, (error) => {
         if (error) {
             console.log('error')
         } else {
@@ -110,7 +110,7 @@ app.post('/SensorUpdate',(req,res)=>{
             console.log('error')
         } else {
             console.log('sucess')
-            res.send('success')
+          
         }
     })
     res.send(JSON.stringify(req.body.DeviceID))
