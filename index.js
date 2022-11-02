@@ -94,7 +94,7 @@ app.get('/TestFCM',(req,res)=>{
 })
 
 app.post('/TestReq',(req,res)=>{
-    res.send("adsf")
+    res.send(req.body)
 })
 
 
