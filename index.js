@@ -214,7 +214,7 @@ app.post('/SendOtherNotification', (req, res) => {
                     console.log('The read failed: ' + errorObject.name);
                 });
             }
-            if (DeviceKeyState == '0') {
+            if (DeviceKeyState == '1') {
                 /*====================================================== */
                 setTimeout(() => {
                     db.ref('UserData/' + OwnerID + '/AccidentActive').once('value', (snapshot) => {
