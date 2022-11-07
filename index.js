@@ -153,6 +153,7 @@ app.post('/SensorUpdate', (req, res) => {
 
 
 app.post('/SendOtherNotification', (req, res) => {
+    
     var serverKey = 'AAAAjFdrMqE:APA91bF9kqi548NMd5PKO1iZc2FGHReyBocqZsVWQWqcMzjSRYnEdkClFGPiXnX4aJACZ-ySI7ASoL3rNl9c96fKlhLLyrb_YhVKuf29y9RRHBIlULsSthef1I9AMFCJ0xXa_d1sOr03'; //put your server key here
     var fcm = new FCM(serverKey);
     const DeviceKeyState = ""
@@ -333,7 +334,7 @@ app.post('/SendOtherNotification', (req, res) => {
     }
 
 
-    res.send('success')
+    res.send('Sending...')
 
 })
 
