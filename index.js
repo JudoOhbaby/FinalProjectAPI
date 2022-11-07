@@ -296,8 +296,8 @@ app.post('/SendOtherNotification', (req, res) => {
                         collapse_key: 'your_collapse_key',
 
                         notification: {
-                            title: 'Accident?',
-                            body: 'ยืนนันความปลอดภัยหากคุณไม่เป็นไร'
+                            title: 'Steal',
+                            body: 'รถของคุณโดนโขมย'
                         },
 
                         data: {  //you can send only notification or only data(or include both)
