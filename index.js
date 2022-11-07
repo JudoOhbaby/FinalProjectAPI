@@ -136,7 +136,7 @@ app.post('/SensorUpdate', (req, res) => {
         })
     }
     if (req.body.Sensor == "Key") {
-        db.ref().child('Device/' + req.body.DeviceID + '/DeviceSensors').update({ KeyState: req.body.KeyState}, (error) => {
+        db.ref().child('Device/' + req.body.DeviceID + '/DeviceSensors').update({ KeyState: req.body.KeyState }, (error) => {
             if (error) {
                 console.log('error')
             } else {
@@ -155,42 +155,184 @@ app.post('/SensorUpdate', (req, res) => {
 app.post('/SendOtherNotification', (req, res) => {
     var serverKey = 'AAAAjFdrMqE:APA91bF9kqi548NMd5PKO1iZc2FGHReyBocqZsVWQWqcMzjSRYnEdkClFGPiXnX4aJACZ-ySI7ASoL3rNl9c96fKlhLLyrb_YhVKuf29y9RRHBIlULsSthef1I9AMFCJ0xXa_d1sOr03'; //put your server key here
     var fcm = new FCM(serverKey);
+    const DeviceKeyState = ""
+    if (req.body.Type == "Accident") {
+        db.ref('Device/' + req.body.DeviceID).once('value', (snapshot) => {
 
-    db.ref('Device/' + req.body.DeviceID + '/Other').once('value', (snapshot) => {
-        const User = snapshot.val();
-        for (var UserID in User) {
-            db.ref('UserData/' + UserID + '/Token').once('value', (snapshot) => {
-                const Token = snapshot.val();
-                var message = { //this may vary according to the message type (single recipient, multicast, topic, et cetera)
-                    to: Token,
-                    collapse_key: 'your_collapse_key',
-
-                    notification: {
-                        title: 'Title of your push notification',
-                        body: 'Body of your push notification'
-                    },
-
-                    data: {  //you can send only notification or only data(or include both)
-                        my_key: 'my value',
-                        my_another_key: 'my another value'
-                    }
-                };
-
-                fcm.send(message, function (err, response) {
-                    if (err) {
-                        console.log("Something has gone wrong!");
+            const User = snapshot.val().Owner;
+            console.log(snapshot.val())
+            const DeviceKeyState = snapshot.val().DeviceSensors.KeyState
+            let OwnerID = ""
+            for (var UserID in User) {
+                OwnerID = UserID
+                console.log(UserID)
+                db.ref().child('UserData/' + UserID).update({ AccidentActive: true }, (error) => {
+                    if (error) {
+                        console.log('error')
                     } else {
-                        console.log("Successfully sent with response: ", response);
-                    }
-                });
+                        console.log('sucess')
 
-            }, (errorObject) => {
-                console.log('The read failed: ' + errorObject.name);
-            });
-        }
-    }, (errorObject) => {
-        console.log('The read failed: ' + errorObject.name);
-    });
+                    }
+                })
+
+                db.ref('UserData/' + UserID + '/Token').once('value', (snapshot) => {
+
+                    const Token = snapshot.val();
+                    var message = { //this may vary according to the message type (single recipient, multicast, topic, et cetera)
+                        to: Token,
+                        collapse_key: 'your_collapse_key',
+
+                        notification: {
+                            title: 'Accident?',
+                            body: 'ยืนนันความปลอดภัยหากคุณไม่เป็นไร'
+                        },
+
+                        data: {  //you can send only notification or only data(or include both)
+                            my_key: 'my value',
+                            my_another_key: 'my another value'
+                        }
+                    };
+
+                    fcm.send(message, function (err, response) {
+                        if (err) {
+                            console.log("Something has gone wrong!");
+                        } else {
+                            console.log("Successfully sent with response: ", response);
+                        }
+                    });
+                    db.ref().child('UserData/' + UserID + '/Notification').push({ DeviceID: req.body.DeviceID, NotificationType: 'Accident', receive: false, receiver: 'Owner', latitude: 16.462385333, longitude: 102.827421667 }, (error) => {
+                        if (error) {
+                            console.log('error')
+                        } else {
+                            console.log('sucess')
+
+                        }
+                    })
+
+                }, (errorObject) => {
+                    console.log('The read failed: ' + errorObject.name);
+                });
+            }
+            if (DeviceKeyState == '0') {
+                /*====================================================== */
+                setTimeout(() => {
+                    db.ref('UserData/' + OwnerID + '/AccidentActive').once('value', (snapshot) => {
+                        const AccidentActive = snapshot.val()
+                        if (AccidentActive) {
+                            db.ref().child('UserData/' + OwnerID).update({ AccidentActive: false }, (error) => {
+                                if (error) {
+                                    console.log('error')
+                                } else {
+                                    console.log('sucess')
+            
+                                }
+                            })
+                            db.ref('Device/' + req.body.DeviceID + '/Other').once('value', (snapshot) => {
+                                const User = snapshot.val();
+                                for (var UserID in User) {
+                                    db.ref('UserData/' + UserID + '/Token').once('value', (snapshot) => {
+                                        const Token = snapshot.val();
+                                        var message = { //this may vary according to the message type (single recipient, multicast, topic, et cetera)
+                                            to: Token,
+                                            collapse_key: 'your_collapse_key',
+
+                                            notification: {
+                                                title: 'Accident!',
+                                                body: 'คนรู้จักคุณเกิดอุบัติเหตุ'
+                                            },
+
+                                            data: {  //you can send only notification or only data(or include both)
+                                                my_key: 'my value',
+                                                my_another_key: 'my another value'
+                                            }
+                                        };
+
+                                        fcm.send(message, function (err, response) {
+                                            if (err) {
+                                                console.log("Something has gone wrong!");
+                                            } else {
+                                                console.log("Successfully sent with response: ", response);
+                                            }
+                                        });
+                                        db.ref().child('UserData/' + UserID + '/Notification').push({ DeviceID: req.body.DeviceID, NotificationType: 'Accident', receive: false, receiver: 'Other', latitude: 16.462385333, longitude: 102.827421667 }, (error) => {
+                                            if (error) {
+                                                console.log('error')
+                                            } else {
+                                                console.log('sucess')
+
+                                            }
+                                        })
+
+                                    }, (errorObject) => {
+                                        console.log('The read failed: ' + errorObject.name);
+                                    });
+                                }
+                            }, (errorObject) => {
+                                console.log('The read failed: ' + errorObject.name);
+                            });
+                        }
+                    })
+
+                }, 20000);
+
+            }
+        }, (errorObject) => {
+            console.log('The read failed: ' + errorObject.name);
+        });
+
+
+    }
+
+
+    if (req.body.Type == "Steal") {
+        db.ref('Device/' + req.body.DeviceID + '/Owner').once('value', (snapshot) => {
+            const User = snapshot.val();
+            for (var UserID in User) {
+                db.ref('UserData/' + UserID + '/Token').once('value', (snapshot) => {
+                    const Token = snapshot.val();
+                    var message = { //this may vary according to the message type (single recipient, multicast, topic, et cetera)
+                        to: Token,
+                        collapse_key: 'your_collapse_key',
+
+                        notification: {
+                            title: 'Accident?',
+                            body: 'ยืนนันความปลอดภัยหากคุณไม่เป็นไร'
+                        },
+
+                        data: {  //you can send only notification or only data(or include both)
+                            my_key: 'my value',
+                            my_another_key: 'my another value'
+                        }
+                    };
+
+                    fcm.send(message, function (err, response) {
+                        if (err) {
+                            console.log("Something has gone wrong!");
+                        } else {
+                            console.log("Successfully sent with response: ", response);
+                        }
+                    });
+                    db.ref().child('UserData/' + UserID + '/Notification').push({ DeviceID: req.body.DeviceID, NotificationType: 'Steal', receive: false, receiver: 'Owner' }, (error) => {
+                        if (error) {
+                            console.log('error')
+                        } else {
+                            console.log('sucess')
+
+                        }
+                    })
+
+                }, (errorObject) => {
+                    console.log('The read failed: ' + errorObject.name);
+                });
+            }
+        }, (errorObject) => {
+            console.log('The read failed: ' + errorObject.name);
+        });
+
+
+    }
+
+
     res.send('success')
 
 })
