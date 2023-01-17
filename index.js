@@ -185,7 +185,8 @@ app.post('/SendOtherNotification', (req, res) => {
 
                         notification: {
                             title: 'Accident?',
-                            body: 'ยืนนันความปลอดภัยหากคุณไม่เป็นไร'
+                            body: 'ยืนนันความปลอดภัยหากคุณไม่เป็นไร',
+                            android_channel_id: 'channel-id'
                         },
 
                         data: {  //you can send only notification or only data(or include both)
